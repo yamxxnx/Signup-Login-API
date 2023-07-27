@@ -1,4 +1,4 @@
-var User = require("../../models/user");
+var User = require("../database/user");
 
 exports.loginUser = function (req, res, next) {
   User.findOne({ email: req.body.email }, function (err, data) {

@@ -1,4 +1,4 @@
-var User = require('../../models/user');
+var User = require('../database/user')
 
 exports.getUserProfile = function (req, res, next) {
     console.log("profile");
