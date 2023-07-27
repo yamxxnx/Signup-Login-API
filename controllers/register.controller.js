@@ -1,6 +1,6 @@
-const User = require("../database/user");
+const userService = require('../services/user.service');
 
-exports.registerUser = function (req, res, next) {
+exports.registerUser = async function (req, res, next) {
   const personInfo = req.body;
 
   if (
@@ -16,41 +16,19 @@ exports.registerUser = function (req, res, next) {
     return res.send({ Error: "Passwords do not match." });
   }
 
-  User.findOne({ email: personInfo.email }, function (err, data) {
-    if (err) {
-      console.error(err);
-      return res.send({ Error: "Error occurred during registration." });
-    }
-
-    if (data) {
+  try {
+    const emailExists = await userService.checkIfEmailExists(personInfo.email);
+    if (emailExists) {
       return res.send({ Error: "Email is already in use." });
     }
 
-    User.findOne({}, function (err, data) {
-      let c = 1;
-      if (data) {
-        c = data.unique_id + 1;
-      }
-
-      const newPerson = new User({
-        unique_id: c,
-        email: personInfo.email,
-        username: personInfo.username,
-        password: personInfo.password,
-        passwordConf: personInfo.passwordConf,
-      });
-
-      newPerson.save(function (err, savedUser) {
-        if (err) {
-          console.error(err);
-          return res.send({ Error: "Error occurred during registration." });
-        }
-
-        console.log("User registration successful:", savedUser);
-        return res.send({ Success: "You are registered, You can login now." });
-      });
-    });
-  });
+    const savedUser = await userService.registerUser(personInfo);
+    console.log("User registration successful:", savedUser);
+    return res.send({ Success: "You are registered, You can login now." });
+  } catch (err) {
+    console.error('Error during user registration:', err);
+    return res.send({ Error: "Error occurred during registration." });
+  }
 };
 
 exports.index_get = function (req, res, next) {
