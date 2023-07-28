@@ -1,14 +1,20 @@
-var User = require("../database/user");
+const profileService = require("../services/profile.service");
 
-exports.getUserProfile = function (req, res, next) {
-  console.log("profile");
-  User.findOne({ unique_id: req.session.userId }, function (err, data) {
-    console.log("data");
-    console.log(data);
-    if (!data) {
-      res.redirect("/");
-    } else {
-      return res.render("data.ejs", { name: data.username, email: data.email });
+exports.getUserProfile = async function (req, res, next) {
+  try {
+    const userId = req.session.userId;
+    const userData = await profileService.getUserProfile(userId);
+
+    if (!userData) {
+      return res.redirect("/");
     }
-  });
+
+    return res.render("data.ejs", {
+      name: userData.username,
+      email: userData.email,
+    });
+  } catch (err) {
+    console.error("Error getting user profile:", err);
+    return res.send({ Error: "Error occurred while fetching user profile." });
+  }
 };

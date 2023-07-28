@@ -1,18 +1,23 @@
-var User = require("../database/user");
+const loginService = require("../services/login.service");
 
-exports.loginUser = function (req, res, next) {
-  User.findOne({ email: req.body.email }, function (err, data) {
-    if (data) {
-      if (data.password == req.body.password) {
-        req.session.userId = data.unique_id;
-        res.send({ Success: "Success!" });
+exports.loginUser = async function (req, res, next) {
+  try {
+    const user = await loginService.findUserByEmail(req.body.email);
+
+    if (user) {
+      if (user.password === req.body.password) {
+        req.session.userId = user.unique_id;
+        return res.send({ Success: "Success!" });
       } else {
-        res.send({ Success: "Wrong password!" });
+        return res.send({ Success: "Wrong password!" });
       }
     } else {
-      res.send({ Success: "This Email Is not registered!" });
+      return res.send({ Success: "This Email Is not registered!" });
     }
-  });
+  } catch (err) {
+    console.error("Error during user login:", err);
+    return res.send({ Error: "Error occurred during login." });
+  }
 };
 
 exports.login_get = function (req, res, next) {
