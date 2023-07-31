@@ -1,20 +1,18 @@
-const profileService = require("../services/profile.service");
+const userService = require("../services/user.service");
 
 exports.getUserProfile = async function (req, res, next) {
   try {
-    const userId = req.session.userId;
-    const userData = await profileService.getUserProfile(userId);
+    const userId = req.userId;
 
-    if (!userData) {
-      return res.redirect("/");
+    const user = await userService.findUserById(userId);
+
+    if (!user) {
+      return res.status(404).send({ Error: "User not found." });
     }
 
-    return res.render("data.ejs", {
-      name: userData.username,
-      email: userData.email,
-    });
+    return res.render("data.ejs", { name: user.username, email: user.email });
   } catch (err) {
-    console.error("Error getting user profile:", err);
-    return res.send({ Error: "Error occurred while fetching user profile." });
+    console.error("Error during user profile retrieval:", err);
+    return res.status(401).send({ Error: "Invalid or expired session." });
   }
 };

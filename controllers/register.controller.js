@@ -1,4 +1,4 @@
-const userService = require('../services/user.service');
+const userService = require("../services/user.service");
 
 exports.registerUser = async function (req, res, next) {
   const personInfo = req.body;
@@ -17,7 +17,7 @@ exports.registerUser = async function (req, res, next) {
   }
 
   try {
-    const emailExists = await userService.checkIfEmailExists(personInfo.email);
+    const emailExists = await userService.findUserByEmail(personInfo.email);
     if (emailExists) {
       return res.send({ Error: "Email is already in use." });
     }
@@ -26,7 +26,7 @@ exports.registerUser = async function (req, res, next) {
     console.log("User registration successful:", savedUser);
     return res.send({ Success: "You are registered, You can login now." });
   } catch (err) {
-    console.error('Error during user registration:', err);
+    console.error("Error during user registration:", err);
     return res.send({ Error: "Error occurred during registration." });
   }
 };

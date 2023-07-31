@@ -1,13 +1,22 @@
-const loginService = require("../services/login.service");
+const authService = require("../services/auth.service");
+const bcrypt = require("bcrypt");
+const userService = require("../services/user.service");
 
 exports.loginUser = async function (req, res, next) {
+  const { email, password } = req.body;
+
   try {
-    const user = await loginService.findUserByEmail(req.body.email);
+    const user = await userService.findUserByEmail(email);
 
     if (user) {
-      if (user.password === req.body.password) {
-        req.session.userId = user.unique_id;
-        return res.send({ Success: "Success!" });
+      const passwordMatch = await bcrypt.compare(password, user.password);
+
+      if (passwordMatch) {
+        const token = authService.generateToken(user._id);
+
+        req.session.token = token;
+
+        return res.send({ Success: "Success!", token });
       } else {
         return res.send({ Success: "Wrong password!" });
       }
@@ -19,7 +28,6 @@ exports.loginUser = async function (req, res, next) {
     return res.send({ Error: "Error occurred during login." });
   }
 };
-
 exports.login_get = function (req, res, next) {
   return res.render("login.ejs");
 };

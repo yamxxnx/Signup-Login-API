@@ -1,36 +1,41 @@
-const User = require('../database/user');
-
-exports.checkIfEmailExists = async function (email) {
-  try {
-    const existingUser = await User.findOne({ email });
-    return existingUser !== null;
-  } catch (err) {
-    console.error('Error checking if email exists:', err);
-    throw err;
-  }
-};
+const bcrypt = require("bcrypt");
+const User = require("../database/user");
 
 exports.registerUser = async function (personInfo) {
+  const { email, username, password } = personInfo;
+  const hashedPassword = await bcrypt.hash(password, 10);
+
   try {
-    let c = 1;
-    const lastUser = await User.findOne({}, { unique_id: 1 }, { sort: { unique_id: -1 } });
-
-    if (lastUser) {
-      c = lastUser.unique_id + 1;
-    }
-
     const newUser = new User({
-      unique_id: c,
-      email: personInfo.email,
-      username: personInfo.username,
-      password: personInfo.password,
-      passwordConf: personInfo.passwordConf,
+      email,
+      username,
+      password: hashedPassword,
     });
 
     const savedUser = await newUser.save();
     return savedUser;
   } catch (err) {
-    console.error('Error registering user:', err);
+    console.error("Error while registering user:", err);
+    throw err;
+  }
+};
+
+exports.findUserByEmail = async function (email) {
+  try {
+    const existingUser = await User.findOne({ email });
+    return existingUser;
+  } catch (err) {
+    console.error("Error checking if email exists:", err);
+    throw err;
+  }
+};
+
+exports.findUserById = async function (userId) {
+  try {
+    const user = await User.findById(userId);
+    return user;
+  } catch (err) {
+    console.error("Error finding user by ID:", err);
     throw err;
   }
 };

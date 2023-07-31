@@ -1,10 +1,11 @@
 const User = require("../database/user");
 
-exports.getUserProfile = async function (userId) {
+exports.findUserByEmail = async function (email) {
   try {
-    return await User.findOne({ unique_id: userId });
+    const user = await User.findOne({ email });
+    return user;
   } catch (err) {
-    console.error("Error finding user profile:", err);
+    console.error("Error finding user by email:", err);
     throw err;
   }
 };
