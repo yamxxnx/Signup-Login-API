@@ -9,6 +9,7 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo")(session);
 const { connectToDB } = require("./database/db");
 const mongoose = require("mongoose");
+// const couponRoutes = require("./routes/coupon.route");
 
 connectToDB()
   .then(() => {
@@ -33,6 +34,7 @@ connectToDB()
 
     var index = require("./routes/index");
     app.use("/", index);
+    // app.use("/coupons", couponRoutes);
 
     app.use(function (req, res, next) {
       var err = new Error("File Not Found");

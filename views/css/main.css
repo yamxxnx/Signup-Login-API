@@ -1,15 +1,72 @@
-body{
-	text-align: center !important;
+body {
+  text-align: center !important;
+  background-color: #f7f7f7;
+  font-family: Arial, sans-serif;
 }
-p{
-	margin-top: 20px;
-	font-size: 30px;
+
+.container {
+  margin-top: 50px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
-input{
-	text-align: center;
+p {
+  margin-top: 20px;
+  font-size: 30px;
 }
-.mssg{
-	margin-top: 5px;
-	margin-bottom: 5px;
-	border-radius: 5px;
+input {
+  text-align: center;
+}
+.mssg {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+}
+form {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.sorting {
+  float: right;
+}
+
+label {
+  margin: -14px 10px 0 0;
+}
+
+input[type="text"],
+select,
+input[type="date"] {
+  width: 200px;
+  padding: 10px;
+  margin-bottom: 15px;
+  margin-right: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+input[type="checkbox"] {
+  margin-right: 10px;
+  margin-bottom: 15px;
+  width: 1.5em;
+}
+
+button {
+  padding: 10px 20px;
+  background-color: #428bca;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #3071a9;
 }
