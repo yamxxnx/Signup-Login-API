@@ -1,0 +1,183 @@
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Coupon Management</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="./css/main.css" />
+
+</head>
+
+<body>
+    <div class="navbar">
+        <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    
+                    <a class="navbar-brand" href="#">Product Management</a>
+                </div>
+                <div class="collapse navbar-collapse" id="myNavbar">
+                    <ul class="nav navbar-nav">
+                        <li ><a href="/profile">Home</a></li>
+                        <li><a href="#">About</a></li>
+                        
+                        <li class="active"><a href="/coupon-management">Coupon Management</a></li>
+                        <li><a href="#">Session Management</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                      </ul>
+                    
+                </div>
+            </div>
+        </nav>
+    </div>
+    <div class="container" class="col-md-4 col-md-offset-4">
+
+
+
+        <hr />
+        <h1>Welcome to Coupon Management System</h1>
+        <hr />
+        <form id="couponForm" action="/add-coupon" method="post">
+            <label for="coupon">Coupon Code:</label>
+            <input type="text" id="coupon" name="couponCode" placeholder="Coupon Code" required />
+
+            <label for="offerName">Offer Name:</label>
+            <input type="text" id="offerName" name="offerName" placeholder="Offer Name" required />
+
+            <label for="couponType">Coupon Type:</label>
+            <select id="couponType" name="couponType" required>
+                <option value="Discount">Discount</option>
+                <option value="Free Shipping">Free Shipping</option>
+            </select>
+
+            <label for="startDate">Start Date:</label>
+            <input type="date" id="startDate" name="startDate" required />
+
+            <label for="endDate">End Date:</label>
+            <input type="date" id="endDate" name="endDate" required />
+
+            <label for="isActive">Active:</label>
+            <input type="checkbox" id="isActive" name="isActive" checked />
+
+            <button type="submit">Create Coupon</button>
+        </form>
+        <hr />
+
+        <div>
+            <h2>List of Coupons</h2>
+            <hr />
+
+            <div class="sorting">
+                <span>Status</span>
+                <select id="statusFilter">
+                    <option value="0">All</option>
+                    <option value="1">Active</option>
+                    <option value="2">Inactive</option>
+                </select>
+            </div>
+            <table id="couponTable" class="table table-hover text-center">
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Offer Name</th>
+                        <th>Coupon Code</th>
+                        <th>Coupon Type</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for (let i=0; i < coupons.length; i++) { %>
+                        <tr>
+                            <td>
+                                <%= i + 1 %>
+                            </td>
+                            <td>
+                                <%= coupons[i].offerName %>
+                            </td>
+                            <td>
+                                <%= coupons[i].couponCode %>
+                            </td>
+                            <td>
+                                <%= coupons[i].couponType %>
+                            </td>
+                            <td>
+                                <%= coupons[i].startDate %>
+                            </td>
+                            <td>
+                                <%= coupons[i].endDate %>
+                            </td>
+                            <td>
+                                <%= coupons[i].status %>
+                            </td>
+                        </tr>
+                        <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#couponForm").submit(function (event) {
+                event.preventDefault();
+
+                const formData = {
+                    couponCode: $("#coupon").val(),
+                    offerName: $("#offerName").val(),
+                    couponType: $("#couponType").val(),
+                    startDate: $("#startDate").val(),
+                    endDate: $("#endDate").val(),
+                    isActive: $("#isActive").prop("checked"),
+                };
+
+                $.ajax({
+                    type: "POST",
+                    url: "/add-coupon",
+                    data: JSON.stringify(formData),
+                    contentType: "application/json",
+                    dataType: "json",
+                    success: function (response) {
+                        alert("Coupon added successfully!");
+
+                        location.reload();
+                    },
+                    error: function (error) {
+                        console.error("Error adding coupon:", error);
+                        alert("An error occurred while adding the coupon.");
+                    },
+                });
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            function filterCouponsByStatus(status) {
+                $("#couponTable tbody tr").each(function () {
+                    const couponStatus = $(this).find("td:last-child").text();
+                    if (
+                        status === "0" ||
+                        couponStatus === (status === "1" ? "Active" : "Inactive")
+                    ) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            }
+
+            $("#statusFilter").on("change", function () {
+                const selectedStatus = $(this).val();
+                filterCouponsByStatus(selectedStatus);
+            });
+
+            filterCouponsByStatus("0");
+        });
+    </script>
+</body>
+
+</html>

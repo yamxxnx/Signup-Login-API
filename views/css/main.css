@@ -3,13 +3,17 @@ body {
   background-color: #f7f7f7;
   font-family: Arial, sans-serif;
 }
-
+th {
+  background-color: #29296d;
+  color: white;
+}
 .container {
   margin-top: 50px;
   padding: 20px;
   border: 1px solid #ccc;
   background-color: #fff;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
 }
 p {
   margin-top: 20px;

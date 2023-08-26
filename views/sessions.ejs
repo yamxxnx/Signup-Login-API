@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Coupon Management</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="./css/main.css" />
+  <style>
+    tr:nth-child(even) {
+      background-color: #f4f3fe;
+
+    }
+
+    tr:nth-child(odd) {
+      background-color: white;
+    }
+
+    .table>tbody>tr>td {
+      padding: 22px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="navbar">
+    <nav class="navbar navbar-inverse">
+      <div class="container-fluid">
+        <div class="navbar-header">
+
+          <a class="navbar-brand" href="#">Product Management</a>
+        </div>
+        <div class="collapse navbar-collapse" id="myNavbar">
+          <ul class="nav navbar-nav">
+            <li><a href="/profile">Home</a></li>
+            <li><a href="#">About</a></li>
+
+            <li><a href="/coupon-management">Coupon Management</a></li>
+            <li class="active"><a href="/sessions">Session Management</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li>
+              <a href="/logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a>
+            </li>
+          </ul>
+
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <div class="container">
+    <hr />
+    <h1>Welcome to Session Management System</h1>
+    <hr />
+
+    <table id="sessionTable" class="table table-hover text-center">
+      <thead>
+        <tr class="table_head">
+          <th>S.No</th>
+          <th>User ID</th>
+          <th>User Name</th>
+          <th>LoggedIn At</th>
+          <th>LoggedOut At</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="sessionTableBody">
+
+        <% for (let i=0; i < sessions.length; i++) { %>
+          <tr>
+            <td>
+              <%= i + 1 %>
+            </td>
+            <td>
+              <%= sessions[i]._id %>
+            </td>
+            <td>
+              <%= sessions[i].username %>
+            </td>
+            <td>
+              <%= new Date(sessions[i].loggedInAt).toLocaleString() %>
+            </td>
+            <td>
+              <%= sessions[i].loggedOutAt ? new Date(sessions[i].loggedOutAt).toLocaleString() : "N/A" %>
+            </td>
+            <td>
+              <%= sessions[i].status %>
+            </td>
+
+          </tr>
+          <% } %>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    console.log("Fetching sessions data...");
+
+    fetch("/sessions")
+      .then((response) => response.json())
+
+      .then((data) => {
+        console.log("Fetched data:", data);
+        const sessionTableBody = document.getElementById("sessionTableBody");
+        data.forEach((session, index) => {
+          const row = document.createElement("tr");
+          row.innerHTML = `
+          <td>${index + 1}</td>
+          <td>${session.userId}</td>
+          <td>${session.username}</td>
+          <td>${new Date(session.loggedInAt).toLocaleString()}</td>
+          <td>${session.loggedOutAt
+              ? new Date(session.loggedOutAt).toLocaleString()
+              : "N/A"
+            }</td>
+          <td>${session.status}</td>
+        `;
+          sessionTableBody.appendChild(row);
+        });
+      })
+      .catch((error) => console.error(error));
+  </script>
+</body>
+
+</html>

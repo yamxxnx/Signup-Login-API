@@ -1,5 +1,9 @@
 const Coupon = require("../database/coupon");
 
+exports.getCouponManagementPage = (req, res) => {
+  res.render("coupon_management.ejs");
+};
+
 exports.addCoupon = async (req, res) => {
   try {
     const { offerName, couponCode, couponType, startDate, endDate, isActive } =

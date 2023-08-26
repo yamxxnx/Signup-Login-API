@@ -10,6 +10,7 @@ const MongoStore = require("connect-mongo")(session);
 const { connectToDB } = require("./database/db");
 const mongoose = require("mongoose");
 // const couponRoutes = require("./routes/coupon.route");
+const sessionController = require("./controllers/session_controller");
 
 connectToDB()
   .then(() => {
@@ -41,6 +42,9 @@ connectToDB()
       err.status = 404;
       next(err);
     });
+
+    // app.get('/sessions', sessionController.getAllSessions);
+    // app.get('/sessions-data', sessionController.getAllSessions);
 
     app.use(function (err, req, res, next) {
       res.status(err.status || 500);
