@@ -8,6 +8,8 @@ const { authenticate } = require("../middleware/auth.middleware");
 const couponController = require("../controllers/coupon.controller");
 const Coupon = require("../database/coupon");
 const sessionController = require("../controllers/session_controller");
+const adminController = require("../controllers/admin.controller");
+const authController = require('../controllers/auth.controller');
 const User = require("../database/user");
 const Session = require("../database/session");
 
@@ -37,5 +39,9 @@ router.get("/logout", authenticate, logoutController.logoutUser);
 // router.get("/logout", logoutController.logoutUser);
 router.post("/add-coupon", couponController.addCoupon);
 router.get("/get-coupons", couponController.getAllCoupons);
+
+router.post("/register", adminController.registerAdmin);
+
+router.get('/validate-token', authenticate, authController.validateToken);
 
 module.exports = router;
